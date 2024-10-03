@@ -4,8 +4,147 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TutionPlus</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
   </head>
   <body>
-    <h1>Hello world!</h1>
+    <div id="app">
+      <header class="bg-gray-800">
+        <div class="flex items-center justify-between">
+          <h1 class="font-bold text-3xl m-4 text-white">TutionPlus</h1>
+          <button
+            class="border-none rounded bg-green-600 text-white font-semibold p-2 m-4"
+          >
+            checkout
+          </button>
+        </div>
+      </header>
+
+      <!-- search functionality -->
+
+      <div class="flex justify-center">
+        <input
+          type="text"
+          placeholder="search for lessons..."
+          class="border-gray-300 mt-12 rounded-lg border-2 p-4 w-auto"
+        />
+        <button class="border-none rounded bg-green-600 text-white w-auto">
+          search
+        </button>
+      </div>
+      <!-- ends here  -->
+
+      <!-- lessons  -->
+      <section id="lessons">
+        <div class="grid sm:grid-cols-1 md:grid-cols-3 gap-4 m-24">
+          <!-- Loop through Lessons and display -->
+          <div
+            class="border border-solid shadow-md m-2 w-auto p-12 rounded-lg"
+            v-for="(lesson, index) in lessons"
+            :key="index"
+          >
+            <img
+              :src="lesson.images"
+              alt="..."
+              class="w-full h-48 object-cover rounded-lg mb-2"
+            />
+            <p class="font-bold text-xl mb-2 mt-4">{{lesson.subject}}</p>
+            <p class="font-semibold text-gray-600">
+              Location : {{lesson.location}}
+            </p>
+            <p class="font-semibold text-gray-600">Price : {{lesson.price}}$</p>
+            <p class="font-semibold text-gray-600">
+              Spaces : {{lesson.spaces}}
+            </p>
+
+            <button
+              class="border-none rounded bg-orange-600 text-white font-semibold p-2 mt-4"
+            >
+              AddToCart
+            </button>
+          </div>
+        </div>
+      </section>
+      <!-- lessons End here  -->
+    </div>
+    <script type="text/javascript">
+      var app = new Vue({
+        el: "#app",
+        data: {
+          lessons: [
+            {
+              subject: "Math",
+              location: "London",
+              price: 110,
+              spaces: 5,
+              images: "images/mathImage.jpg",
+            },
+            {
+              subject: "Physics",
+              location: "westham",
+              price: 123,
+              spaces: 5,
+              images: "images/PhysicsImage.jpeg",
+            },
+            {
+              subject: "Web Development",
+              location: "South London",
+              price: 80,
+              spaces: 5,
+              images: "images/webdevelopmentImage.jpeg",
+            },
+            {
+              subject: "Cybersecurity",
+              location: "Manchester",
+              price: 200,
+              spaces: 5,
+              images: "images/cybersecurityImage.jpeg",
+            },
+            {
+              subject: "Data science",
+              location: "Germany",
+              price: 450,
+              spaces: 5,
+              images: "images/datascienceImage.jpeg",
+            },
+            {
+              subject: "AI/Machine Learning",
+              location: "Dubai",
+              price: 225,
+              spaces: 5,
+              images: "images/ai-vs-machine-learningImage.png",
+            },
+            {
+              subject: "Linear Alegbra",
+              location: "westLondon",
+              price: 30,
+              spaces: 5,
+              images: "images/linearAlgebraImage.jpeg",
+            },
+            {
+              subject: "Operating System",
+              location: "Los Angelos",
+              price: 320,
+              spaces: 5,
+              images: "images/operatingsystemImage.jpeg",
+            },
+            {
+              subject: "Product Managere",
+              location: "Portugal",
+              price: 245,
+              spaces: 5,
+              images: "images/productManagerImage.jpeg",
+            },
+            {
+              subject: "BackEnd Webdevelopment",
+              location: "switzerland",
+              price: 700,
+              spaces: 5,
+              images: "images/backEndImage.jpeg",
+            },
+          ],
+        },
+      });
+    </script>
   </body>
 </html>
