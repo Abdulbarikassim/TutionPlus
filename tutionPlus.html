@@ -13,10 +13,12 @@
   </head>
   <body>
     <div id="app">
+      <!-- header section -->
       <header class="bg-gray-800">
         <div class="flex items-center justify-between">
           <h1 class="font-bold text-3xl m-4 text-white">StudyPlus</h1>
           <button
+            v-on:click="showCheckOut"
             class="border-none rounded bg-green-600 text-white font-semibold p-2 m-4"
           >
             {{cartItemCount}}
@@ -26,63 +28,100 @@
       </header>
 
       <!-- search functionality -->
-
-      <div class="flex justify-center items-center mt-12 space-x-2">
-        <input
-          type="text"
-          placeholder="Search for lessons..."
-          class="border-gray-300 rounded-lg border-2 p-2 w-96"
-        />
-        <button class="bg-red-500 text-white font-bold h-10 w-24 rounded-lg">
-          Search
-        </button>
-      </div>
-      <!-- ends here  -->
-
-      <!-- lessons  -->
-
-      <div class="grid sm:grid-cols-1 md:grid-cols-3 gap-4 m-24">
-        <!-- Loop through Lessons and display -->
-        <div
-          class="border border-solid shadow-md m-2 w-auto p-12 rounded-lg"
-          v-for="(lesson, index) in lessons"
-          :key="index"
-        >
-          <img
-            :src="lesson.images"
-            alt="..."
-            class="w-full h-48 object-cover rounded-lg mb-2"
+      <div v-if="showProduct">
+        <div class="flex justify-center items-center mt-12 space-x-2">
+          <input
+            type="text"
+            placeholder="Search for lessons..."
+            class="border-gray-300 rounded-lg border-2 p-2 w-96"
           />
-          <p class="font-bold text-xl mb-2 mt-4">{{lesson.subject}}</p>
-          <p class="font-semibold text-gray-600">
-            Location : {{lesson.location}}
-          </p>
-          <p class="font-semibold text-gray-600">Price : ${{lesson.price}}</p>
-          <p class="font-semibold text-gray-600">Spaces : {{lesson.spaces}}</p>
+          <button class="bg-red-500 text-white font-bold h-10 w-24 rounded-lg">
+            Search
+          </button>
+        </div>
+        <!-- ends here  -->
 
-          <button
-            v-if="canAddItem"
-            v-on:click="addToCard"
-            class="border-none rounded bg-orange-600 text-white font-semibold p-2 mt-4"
+        <!-- lessons  -->
+
+        <div class="grid sm:grid-cols-1 md:grid-cols-3 gap-4 m-24">
+          <!-- Loop through Lessons and display -->
+          <div
+            class="border border-solid shadow-md m-2 w-auto p-12 rounded-lg"
+            v-for="(lesson, index) in lessons"
+            :key="index"
           >
-            add To Cart
-          </button>
-          <button
-            v-else
-            disabled="disabled"
-            class="border-none rounded bg-blue-500 text-white font-semibold p-2 mt-4"
-          >
-            add To Cart
-          </button>
+            <img
+              :src="lesson.images"
+              alt="..."
+              class="w-full h-48 object-cover rounded-lg mb-2"
+            />
+            <p class="font-bold text-xl mb-2 mt-4">{{lesson.subject}}</p>
+            <p class="font-semibold text-gray-600">
+              Location : {{lesson.location}}
+            </p>
+            <p class="font-semibold text-gray-600">Price : ${{lesson.price}}</p>
+            <p class="font-semibold text-gray-600">
+              Spaces : {{lesson.spaces}}
+            </p>
+
+            <button
+              v-on:click="addToCart(index)"
+              v-if="lesson.spaces > 0"
+              class="border-none rounded bg-blue-600 text-white font-semibold p-2 mt-4"
+            >
+              add To Cart
+            </button>
+            <button
+              disabled="disabled"
+              class="border-none rounded bg-blue-500 text-white font-semibold p-2 mt-4"
+              v-else
+            >
+              No spaces Left
+            </button>
+          </div>
         </div>
       </div>
 
-      <!-- lessons End here  -->
+      <!-- show the cart page. -->
+      <div v-else>
+        <div class="grid sm:grid-cols-1 md:grid-cols-3 gap-4 m-24">
+          <!-- Loop through Lessons and display -->
+          <div
+            v-for="(lesson, index) in cart"
+            :key="index"
+            class="border border-solid shadow-md m-2 w-auto p-12 rounded-lg"
+          >
+            <p class="font-bold text-xl mb-2 mt-4">
+              Lesson: {{lesson.subject}}
+            </p>
+            <p class="font-semibold text-gray-600">
+              Location: {{lesson.location}}
+            </p>
+            <p class="font-semibold text-gray-600">Price: {{lesson.price}}</p>
+            <p class="font-semibold text-gray-600">
+              Available Spaces : {{lesson.spaces}}
+            </p>
+            <button
+              class="border-2 border-black rounded text-black font-semibold p-2 mt-4 m-4 hover:bg-black hover:text-white transition delay-150"
+            >
+              check Out
+            </button>
+            <button
+              class="border-2 rounded border-black text-black font-semibold p-2 mt-4 m-4 hover:bg-black hover:text-white transition delay-150"
+            >
+              Remove
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
+
+    <!-- script -->
     <script type="text/javascript">
       var app = new Vue({
         el: "#app",
         data: {
+          showProduct: true,
           lessons: [
             {
               id: 1,
@@ -169,17 +208,26 @@
         },
         // methods below.
         methods: {
-          addToCard: function () {
-            this.cart.push(this.lessons.id);
+          addToCart: function (index) {
+            if (this.lessons[index].spaces > 0) {
+              this.cart.push(this.lessons[index]);
+              this.lessons[index].spaces--;
+            } else {
+              alert("No more spaces for this lesson");
+            }
+          },
+          showCheckOut: function () {
+            if (this.cart.length > 0) {
+              this.showProduct = !this.showProduct;
+            } else {
+              alert("No lessons in the cart");
+            }
           },
         },
         // computed methods.
         computed: {
           cartItemCount: function () {
             return this.cart.length || "";
-          },
-          canAddItem: function () {
-            this.lessons.spaces > this.cartItemCount;
           },
         },
       });
