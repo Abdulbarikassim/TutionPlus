@@ -84,6 +84,7 @@
 
       <!-- show the cart page. -->
       <div v-else>
+        <h1 class="text-center mt-8 font-bold text-4xl">Cart Lessons</h1>
         <div class="grid sm:grid-cols-1 md:grid-cols-3 gap-4 m-24">
           <!-- Loop through Lessons and display -->
           <div
@@ -102,12 +103,13 @@
               Available Spaces : {{lesson.spaces}}
             </p>
             <button
-              class="border-2 border-black rounded text-black font-semibold p-2 mt-4 m-4 hover:bg-black hover:text-white transition delay-150"
+              class="rounded text-white bg-green-600 font-semibold p-2 mt-4 m-4"
             >
               check Out
             </button>
             <button
-              class="border-2 rounded border-black text-black font-semibold p-2 mt-4 m-4 hover:bg-black hover:text-white transition delay-150"
+              v-on:click="removeFromList(index)"
+              class="rounded text-white bg-red-600 font-semibold p-2 mt-4 m-4"
             >
               Remove
             </button>
@@ -222,6 +224,21 @@
             } else {
               alert("No lessons in the cart");
             }
+          },
+          removeFromList: function (index) {
+            const removedItem = this.cart[index];
+            if (removedItem) {
+              const originalLesson = this.lessons.find(
+                (lesson) => lesson.id === removedItem.id
+              );
+              if (originalLesson) {
+                originalLesson.spaces++;
+              }
+            }
+
+            this.cart = this.cart.filter((item, i) => {
+              return i != index;
+            });
           },
         },
         // computed methods.
