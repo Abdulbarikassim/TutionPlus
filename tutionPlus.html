@@ -31,7 +31,7 @@
         </div>
       </header>
 
-      <!-- search functionality -->
+      <!-- search functionality and sort -->
       <div v-if="showProduct">
         <div class="flex justify-between items-center mt-12 space-x-2 m-24">
           <div class="space-x-8">
@@ -60,6 +60,7 @@
               type="text"
               placeholder="Search for lessons..."
               class="border-gray-300 rounded-lg border-2 p-2 w-96"
+              v-model="searchQuery"
             />
             <button
               class="bg-red-500 text-white font-bold h-10 w-24 rounded-lg"
@@ -76,7 +77,7 @@
           <!-- Loop through Lessons and display -->
           <div
             class="border border-solid shadow-md m-2 w-auto p-12 rounded-lg"
-            v-for="(lesson, index) in lessons"
+            v-for="(lesson, index) in filteredLessons"
             :key="index"
           >
             <img
@@ -158,6 +159,7 @@
           showProduct: true,
           sortOrder: "ascending",
           sortCriteria: "name",
+          searchQuery: "",
           lessons: [
             {
               id: 1,
@@ -292,6 +294,19 @@
         computed: {
           cartItemCount: function () {
             return this.cart.length || "";
+          },
+
+          // search Query functionality.
+
+          filteredLessons() {
+            return this.lessons.filter((lesson) => {
+              const lowerCaseQuery = this.searchQuery.toLowerCase();
+              return (
+                lesson.subject.toLowerCase().includes(lowerCaseQuery) ||
+                lesson.location.toLowerCase().includes(lowerCaseQuery) ||
+                lesson.price.toString().includes(lowerCaseQuery)
+              );
+            });
           },
         },
       });
