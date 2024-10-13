@@ -8,36 +8,65 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
     />
   </head>
   <body>
     <div id="app">
       <!-- header section -->
-      <header class="bg-gray-800">
+      <header>
         <div class="flex items-center justify-between">
-          <h1 class="font-bold text-3xl m-4 text-white">StudyPlus</h1>
+          <a href="#app">
+            <h1 class="font-bold text-3xl m-4 text-black">StudyPlus</h1></a
+          >
           <button
             v-on:click="showCheckOut"
             class="border-none rounded bg-green-600 text-white font-semibold p-2 m-4"
           >
             {{cartItemCount}}
-            <span class="fas fa-cart-plus"> Cart</span>
+            <span>
+              <i class="fa fa-cart-plus" aria-hidden="true"></i> Cart</span
+            >
           </button>
         </div>
       </header>
 
       <!-- search functionality -->
       <div v-if="showProduct">
-        <div class="flex justify-center items-center mt-12 space-x-2">
-          <input
-            type="text"
-            placeholder="Search for lessons..."
-            class="border-gray-300 rounded-lg border-2 p-2 w-96"
-          />
-          <button class="bg-red-500 text-white font-bold h-10 w-24 rounded-lg">
-            Search
-          </button>
+        <div class="flex justify-between items-center mt-12 space-x-2 m-24">
+          <div class="space-x-8">
+            <label class="font-bold" for="sort">Sort By: </label>
+            <select
+              class="border rounded-lg p-2 w-48"
+              v-model="sortCriteria"
+              @change="sortLessons"
+            >
+              <option value="name">Name</option>
+              <option value="location">Location</option>
+              <option value="price">Price</option>
+            </select>
+            <select
+              class="border rounded-lg p-2 w-48"
+              v-model="sortOrder"
+              @change="sortLessons"
+            >
+              <option value="ascending">ascending</option>
+              <option value="descending">descending</option>
+            </select>
+          </div>
+
+          <div>
+            <input
+              type="text"
+              placeholder="Search for lessons..."
+              class="border-gray-300 rounded-lg border-2 p-2 w-96"
+            />
+            <button
+              class="bg-red-500 text-white font-bold h-10 w-24 rounded-lg"
+            >
+              Search
+            </button>
+          </div>
         </div>
         <!-- ends here  -->
 
@@ -102,17 +131,20 @@
             <p class="font-semibold text-gray-600">
               Available Spaces : {{lesson.spaces}}
             </p>
-            <button
-              class="rounded text-white bg-green-600 font-semibold p-2 mt-4 m-4"
-            >
-              check Out
-            </button>
-            <button
-              v-on:click="removeFromList(index)"
-              class="rounded text-white bg-red-600 font-semibold p-2 mt-4 m-4"
-            >
-              Remove
-            </button>
+
+            <div class="flex space-x-8">
+              <button
+                class="rounded text-white bg-green-600 font-semibold p-2 mt-4"
+              >
+                check Out
+              </button>
+              <button
+                v-on:click="removeFromList(index)"
+                class="rounded text-white bg-red-600 font-semibold p-2 mt-4"
+              >
+                Remove
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -124,6 +156,8 @@
         el: "#app",
         data: {
           showProduct: true,
+          sortOrder: "ascending",
+          sortCriteria: "name",
           lessons: [
             {
               id: 1,
@@ -221,8 +255,6 @@
           showCheckOut: function () {
             if (this.cart.length > 0) {
               this.showProduct = !this.showProduct;
-            } else {
-              alert("No lessons in the cart");
             }
           },
           removeFromList: function (index) {
@@ -238,6 +270,21 @@
 
             this.cart = this.cart.filter((item, i) => {
               return i != index;
+            });
+          },
+
+          // sorting method.
+          sortLessons: function () {
+            const modifier = this.sortOrder == "ascending" ? 1 : -1;
+
+            this.lessons.sort((a, b) => {
+              if (this.sortCriteria === "name") {
+                return modifier * a.subject.localeCompare(b.subject);
+              } else if (this.sortCriteria === "location") {
+                return modifier * a.location.localeCompare(b.location);
+              } else if (this.sortCriteria === "price") {
+                return modifier * (a.price - b.price);
+              }
             });
           },
         },
