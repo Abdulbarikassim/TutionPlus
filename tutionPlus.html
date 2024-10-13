@@ -20,6 +20,7 @@
             <h1 class="font-bold text-3xl m-4 text-black">StudyPlus</h1></a
           >
           <button
+            v-if="!isCartEmpty"
             v-on:click="showCheckOut"
             class="border-none rounded bg-green-600 text-white font-semibold p-2 m-4"
           >
@@ -77,7 +78,7 @@
           <!-- Loop through Lessons and display -->
           <div
             class="border border-solid shadow-md m-2 w-auto p-12 rounded-lg"
-            v-for="(lesson, index) in filteredLessons"
+            v-for="(lesson, index) in filterItems"
             :key="index"
           >
             <img
@@ -295,12 +296,17 @@
           cartItemCount: function () {
             return this.cart.length || "";
           },
+          // check if the cart is empty.
 
+          isCartEmpty: function () {
+            return this.cart.length === 0;
+          },
           // search Query functionality.
 
-          filteredLessons() {
+          filterItems() {
             return this.lessons.filter((lesson) => {
               const lowerCaseQuery = this.searchQuery.toLowerCase();
+
               return (
                 lesson.subject.toLowerCase().includes(lowerCaseQuery) ||
                 lesson.location.toLowerCase().includes(lowerCaseQuery) ||
